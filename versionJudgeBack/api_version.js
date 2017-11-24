@@ -73,10 +73,12 @@ apiRoute.post('/version/setversion', function (req, res) {
   var app = req.body.app;
   if (!app || (app != '1')) {
     res.json(errorResponse('app参数未传或不合法'))
+    return;
   }
   var os = req.body.os;
   if (!os || (os != '1' && os != '2' && os != '3')) {
     res.json(errorResponse('os参数未传或不合法'))
+    return;
   }
   app = app.toString();
   os = os.toString();
@@ -84,6 +86,7 @@ apiRoute.post('/version/setversion', function (req, res) {
   var version = req.body.version;
   if (!version) {
     res.json(errorResponse('版本号为必传字段'))
+    return;
   }
   var isForceUpdate = req.body.isForceUpdate;
   if (!isForceUpdate) {
@@ -107,6 +110,7 @@ apiRoute.post('/version/setversion', function (req, res) {
     let errorMessage1 = saveData(path1, map);
     if (errorMessage1) {
       res.json(errorResponse(errorMessage1))
+      return;
     }
 
     var jsonName2 = appMap[app] + '_' + osMap['2'];
@@ -114,6 +118,7 @@ apiRoute.post('/version/setversion', function (req, res) {
     let errorMessage2 = saveData(path2, map);
     if (errorMessage2) {
       res.json(errorResponse(errorMessage2))
+      return;
     }
   } else {
     var jsonName = appMap[app] + '_' + osMap[os];
@@ -121,6 +126,7 @@ apiRoute.post('/version/setversion', function (req, res) {
     let errorMessage = saveData(path, map);
     if (errorMessage) {
       res.json(errorResponse(errorMessage))
+      return;
     }
   }
 
@@ -138,10 +144,12 @@ apiRoute.post('/version/getversion', function (req, res) {
   var app = req.body.app;
   if (!app || (app != '1')) {
     res.json(errorResponse('app参数未传或不合法'))
+    return;
   }
   var os = req.body.os;
   if (!os || (os != '1' && os != '2')) {
     res.json(errorResponse('os参数未传或不合法'))
+    return;
   }
   app = app.toString();
   os = os.toString();
@@ -155,10 +163,12 @@ apiRoute.post('/version/getversion', function (req, res) {
   } catch (e) {
     console.log(e);
     res.json(errorResponse('未查到版本信息'))
+    return;
   }
   var version = data.version;
   if (!version) {
     res.json(errorResponse('未查到版本信息'))
+    return;
   }
 
   res.json({
