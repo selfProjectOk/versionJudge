@@ -46,28 +46,22 @@ var osMap = {
 }
 
 function saveData(path, map) {
-  var data = {};
   // 读文件
   try {
-    data = JSON.parse(fs.readFileSync(path));
+    var data = JSON.parse(fs.readFileSync(path));
+    var creatTime = data.createTime;
+    var newPath = path.replace('.json', '_' + creatTime.replace(/[-: ]/g, '_') + '_history.json');
+    fs.writeFileSync(newPath, JSON.stringify(data));
   } catch (e) {
     if (e.code === 'ENOENT') {
-      data = {
-        versions: []
-      }
     } else {
       console.log(e);
       return '系统错误'
     }
   }
-  if (!data.versions) {
-    data.versions = [map];
-  } else {
-    data.versions.push(map);
-  }
   // 写文件
   try {
-    fs.writeFileSync(path, JSON.stringify(data));
+    fs.writeFileSync(path, JSON.stringify(map));
   } catch (e) {
     console.log(e);
     return '系统错误'
@@ -162,17 +156,15 @@ apiRoute.post('/version/getversion', function (req, res) {
     console.log(e);
     res.json(errorResponse('未查到版本信息'))
   }
-  var versions = data.versions;
-  if (!versions || versions.length < 1) {
+  var version = data.version;
+  if (!version) {
     res.json(errorResponse('未查到版本信息'))
   }
 
   res.json({
     message: '成功',
     status: 3001,
-    payload: {
-      version: versions[versions.length - 1]
-    }
+    payload: data
   });
 })
 
